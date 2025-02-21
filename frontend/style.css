@@ -1,0 +1,179 @@
+/* General Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f4f8;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    overflow-x: hidden;
+}
+
+/* Header */
+header {
+    margin-bottom: 30px;
+    animation: fadeIn 1s ease-in-out;
+    width: 100%;
+    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+    padding: 20px;
+    border-radius: 0 0 15px 15px;
+}
+
+h1 {
+    font-size: 3rem;
+    color: white;
+}
+
+p {
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+/* Task List */
+#task-list {
+    width: 80%;
+    margin-bottom: 20px;
+}
+
+#task-input {
+    margin-bottom: 20px;
+}
+
+/* Task Input Field */
+input[type="text"] {
+    padding: 12px 15px;
+    font-size: 1.1rem;
+    width: 80%;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 0, 255, 0.2);
+}
+
+/* Add Task Button */
+button {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    background: linear-gradient(45deg, #ff7e5f, #feb47b);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background: linear-gradient(45deg, #feb47b, #ff7e5f);
+    transform: scale(1.05);
+}
+
+/* Task Items */
+.task-item {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.task-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.task-item .task-priority {
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+.task-item h3 {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.task-item p {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Task Item Delete Button */
+.task-item button {
+    background: red;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: background 0.3s ease;
+}
+
+.task-item button:hover {
+    background: darkred;
+}
+
+/* Footer 
+footer {
+    margin-top: 20px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #333;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+footer .footer-btn {
+    background-color: #2575fc;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+footer .footer-btn:hover {
+    background-color: #6a11cb;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Task Priority Icon */
+.task-item .task-priority {
+    display: inline-block;
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+
+
+

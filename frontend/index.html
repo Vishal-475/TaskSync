@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskSync</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body class="bg-gray-900 text-white font-sans">
+
+    <!-- Header Section -->
+    <header class="w-full bg-gradient-to-r from-indigo-700 to-purple-700 py-20 text-center rounded-b-lg shadow-xl animate__animated animate__fadeIn">
+        <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-yellow-500">TaskSync</h1>
+        <p class="mt-3 text-xl font-light text-gray-300">Your smart, context-aware task manager</p>
+    </header>
+
+    <!-- Task List Section -->
+    <section id="task-list" class="container mx-auto my-12 p-4">
+        <h2 class="text-3xl text-center font-semibold text-gray-100 mb-6">Your Tasks</h2>
+        <div id="taskList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"> </div> 
+    </section>
+
+    <!-- Task Entry Form -->
+    <section id="task-input" class="container mx-auto p-4">
+        <div class="flex justify-center items-center min-h-screen bg-gray-900">
+            <form id="taskForm" class="w-full max-w-lg bg-gray-800 p-8 rounded-2xl shadow-2xl space-y-6 border border-gray-700">
+                <h2 class="text-3xl font-bold text-center text-white mb-4"> Add Your Task</h2>
+        
+                <input type="text" id="task" placeholder="🔹 Enter your task" required 
+                    class="w-full p-4 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none text-lg transition duration-300 hover:bg-gray-600">
+        
+                <input type="text" id="priority" placeholder="⚡ Priority (High, Medium, Low)" required 
+                    class="w-full p-4 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:outline-none text-lg transition duration-300 hover:bg-gray-600">
+        
+                <input type="text" id="context" placeholder="📌 Task Context (Work, Personal)" required 
+                    class="w-full p-4 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:outline-none text-lg transition duration-300 hover:bg-gray-600">
+        
+                <input type="text" id="city" placeholder="📍 City (optional)" 
+                    class="w-full p-4 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:outline-none text-lg transition duration-300 hover:bg-gray-600">
+        
+                <div class="flex space-x-4">
+                    <input type="date" id="dueDate" required 
+                        class="w-1/2 p-4 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-red-500 focus:outline-none text-lg transition duration-300 hover:bg-gray-600">
+                    
+                    <input type="time" id="reminder" required 
+                        class="w-1/2 p-4 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none text-lg transition duration-300 hover:bg-gray-600">
+                </div>
+        
+                <select id="status" required 
+                    class="w-full p-4 rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-orange-500 focus:outline-none text-lg transition duration-300 hover:bg-gray-600">
+                    <option value="Pending">🕒 Pending</option>
+                    <option value="In Progress">⏳ In Progress</option>
+                    <option value="Completed">✅ Completed</option>
+                </select>
+        
+                <button type="submit" 
+                    class="w-full py-4 text-xl font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl shadow-lg hover:scale-105 transform transition duration-300 hover:shadow-2xl">
+                    ➕ Add Task
+                </button>
+            </form>
+        </div>
+        
+    </section>
+
+    <!-- JavaScript -->
+    <script>
+        // Fetch tasks from the backend
+        async function fetchTasks() {
+    try {
+        const response = await fetch('http://localhost:5000/tasks');
+        const tasks = await response.json();
+        console.log("Fetched tasks:", tasks);
+
+        const taskList = document.getElementById('taskList');
+        taskList.innerHTML = ''; // Clear previous tasks
+
+        tasks.forEach(task => {
+            const div = document.createElement('div');
+            div.classList.add('bg-gray-800', 'p-6', 'rounded-xl', 'shadow-xl', 'hover:scale-105', 'animate__animated', 'animate__fadeIn');
+
+            div.innerHTML = `
+                <div class="flex items-center space-x-4">
+                    <span class="bg-blue-500 text-white p-3 rounded-full text-2xl">${task.context === 'Work' ? '🏢' : '🏠'}</span>
+                    <h3 class="text-2xl font-medium text-gray-200">${task.task}</h3>
+                </div>
+                <p class="text-gray-400 mt-2"><strong>Due Date:</strong> ${task.dueDate}</p>
+                <p class="text-gray-400 mt-2"><strong>Reminder:</strong> ${task.reminder}</p>
+                <p class="text-gray-400 mt-2"><strong>Priority:</strong> ${task.priority}</p>
+                <button onclick="deleteTask('${task.id}')" class="bg-red-600 text-white py-2 px-4 rounded-full mt-4 hover:bg-red-700 transition duration-300">❌ Delete</button>
+            `;
+            taskList.appendChild(div);
+        });
+    } catch (error) {
+        console.error("Error fetching tasks:", error);
+    }
+}
+
+
+// Ensure fetchTasks() runs when the page loads
+window.onload = fetchTasks;
+
+        // Delete task function
+        async function deleteTask(taskId) {
+    if (!confirm("Are you sure you want to delete this task?")) return;
+
+    try {
+        const response = await fetch(`http://localhost:5000/tasks/${taskId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' } // Ensure proper headers
+        });
+
+        const result = await response.json();
+        console.log("Delete Task Response:", result); // Debugging
+
+        if (result.success) {
+            alert("Task deleted successfully!");
+            fetchTasks(); // Refresh task list
+        } else {
+            alert("Failed to delete task!");
+        }
+    } catch (error) {
+        console.error("Error deleting task:", error);
+    }
+}
+
+
+
+
+        // Handle task form submission
+        
+    document.getElementById('taskForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const task = document.getElementById('task').value;
+        const priority = document.getElementById('priority').value;
+        const context = document.getElementById('context').value;
+        const city = document.getElementById('city').value;
+        const dueDate = document.getElementById('dueDate').value;
+        const reminder = document.getElementById('reminder').value;
+        const status = document.getElementById('status').value;
+
+        console.log("Submitting Task:", { task, priority, context, city, dueDate, reminder, status });
+
+        const response = await fetch('http://localhost:5000/tasks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ task, priority, context, city, dueDate, reminder, status })
+        });
+
+        const data = await response.json();
+        console.log(data);
+        fetchTasks(); // Refresh task list
+    });
+
+
+        // Ensure fetchTasks() runs when the page loads
+        window.onload = fetchTasks;
+
+
+
+
+        // Function to check reminders
+function checkReminders() {
+    const now = new Date();
+    const currentTime = now.toTimeString().slice(0, 5); // Format HH:MM
+
+    console.log("⏰ Checking reminders at:", currentTime);
+
+    // Fetch tasks from Firestore
+    fetch('http://localhost:5000/tasks')
+        .then(response => response.json())
+        .then(tasks => {
+            tasks.forEach(task => {
+                if (task.reminder === currentTime) {
+                    alert(`🔔 Reminder: ${task.task} is due now!`);
+                }
+            });
+        })
+        .catch(error => console.error("Error checking reminders:", error));
+}
+
+// Run checkReminders() every minute
+setInterval(checkReminders, 60000);
+
+
+
+function playNotificationSound() {
+    const audio = new Audio('https://www.soundjay.com/button/beep-09.wav'); // Loud & clear notification sound
+    audio.play();
+}
+
+
+
+function checkReminders() {
+    const now = new Date();
+    const currentTime = now.toTimeString().slice(0, 5); // Format HH:MM
+
+    fetch('http://localhost:5000/tasks')
+        .then(response => response.json())
+        .then(tasks => {
+            tasks.forEach(task => {
+                if (task.reminder === currentTime) {
+                    alert(`🔔 Reminder: ${task.task} is due now!`);
+                    playNotificationSound();
+                }
+            });
+        })
+        .catch(error => console.error("Error checking reminders:", error));
+}
+
+setInterval(checkReminders, 60000);
+
+
+        
+    </script>
+
+    
+    <script>
+        document.getElementById('taskForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+    
+            const task = document.getElementById('taskName').value;
+            const city = document.getElementById('city').value;
+            const dueDate = document.getElementById('dueDate').value;
+            const reminder = document.getElementById('reminder').value;
+            const status = document.getElementById('status').value;
+    
+            const response = await fetch('/tasks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ task, city, dueDate, reminder, status })
+            });
+    
+            const data = await response.json();
+            console.log(data);
+        });
+    </script>
+    
+
+</body>
+</html>
